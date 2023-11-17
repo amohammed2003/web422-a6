@@ -7,6 +7,7 @@ import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
 import Pagination from "react-bootstrap/Pagination"
 import ArtworkCard from "@/components/ArtworkCard"
+import validObjectIDList from "@/public/data/validObjectIDList.json"
 
 const PER_PAGE = 12
 
@@ -19,10 +20,8 @@ export default function Artwork() {
   let finalQuery = router.asPath.split("?")[1]
 
   //Then, we use SWR to make a request to the API, and fetch as json.
-  const fetcher = (url) => fetch(url).then((res) => res.json())
   const { data, error } = useSWR(
-    `https://collectionapi.metmuseum.org/public/collection/v1/search?${finalQuery}`,
-    fetcher
+    `https://collectionapi.metmuseum.org/public/collection/v1/search?${finalQuery}`
   )
 
   //The pagination functions using useState
@@ -42,8 +41,13 @@ export default function Artwork() {
   useEffect(() => {
     if (data) {
       let results = []
-      for (let i = 0; i < data?.objectIDs?.length; i += PER_PAGE) {
-        const chunk = data?.objectIDs.slice(i, i + PER_PAGE)
+      // Filter the search result to avoid the "not a valid object" case from the museum.
+      let filteredResults = validObjectIDList.objectIDs.filter((x) =>
+        data.objectIDs?.includes(x)
+      )
+
+      for (let i = 0; i < filteredResults.length; i += PER_PAGE) {
+        const chunk = filteredResults.slice(i, i + PER_PAGE)
         results.push(chunk)
       }
       setArtworkList(results)

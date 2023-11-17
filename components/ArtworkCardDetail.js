@@ -2,20 +2,42 @@ import useSWR from "swr"
 import Error from "next/error"
 import Button from "react-bootstrap/Button"
 import Card from "react-bootstrap/Card"
-
-const fetcher = (url) => fetch(url).then((res) => res.json())
+import { useState } from "react"
+import { useAtom } from "jotai"
+import { favouritesAtom } from "@/store"
+import { useEffect } from "react"
 
 export default function ArtworkCardDetail({ objectID }) {
   const { data, error } = useSWR(
-    `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectID}`,
-    fetcher
+    objectID
+      ? `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectID}`
+      : null
   )
+  
+  const [favouritesList, setFavouritesList] = useAtom(favouritesAtom)
 
+  
+  const [showAdded, setShowAdded] = useState(favouritesList.includes(objectID))
+
+  
+  const favouritesClicked = () => {
+    if (showAdded) {
+      setFavouritesList((current) => current.filter((fav) => fav != objectID))
+      setShowAdded(false)
+    } else {
+      setFavouritesList((current) => [...current, objectID])
+      setShowAdded(true)
+    }
+  }
+  
+  useEffect(() => {
+    console.log(favouritesList)
+  })
   if (error) {
     return <Error statusCode={404} />
-  } else if (!data) {
-    return <Error statusCode={403} />
-  } else {
+  }
+
+  if (data) {
     return (
       <Card>
         {data?.primaryImage && (
@@ -57,12 +79,24 @@ export default function ArtworkCardDetail({ objectID }) {
               <br />
               <strong>Dimensions: </strong>
               {data.dimensions || "N/A"}
+              <br />
+              <br />
+              <Button
+                variant={showAdded ? "primary" : "outline-primary"}
+                onClick={() => favouritesClicked()}
+              >
+                + Favourite {showAdded ? "(added)" : ""}
+              </Button>
             </>
           </Card.Text>
           <br />
-          <Button onClick={() => history.back()}>Back</Button>
+          <Button variant="info" onClick={() => history.back()}>
+            Back
+          </Button>
         </Card.Body>
       </Card>
     )
+  } else {
+    return null
   }
 }

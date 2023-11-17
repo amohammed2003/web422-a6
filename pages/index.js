@@ -1,10 +1,10 @@
 /*********************************************************************************
- *  WEB422 – Assignment 4
+ *  WEB422 – Assignment 5
  *  I declare that this assignment is my own work in accordance with Seneca Academic Policy.
  *  No part of this assignment has been copied manually or electronically from any other source
  *  (including web sites) or distributed to other students.
  *
- *  Name: Alam Mohammed    Student ID: 156506214   Date: 03 Nov 2023
+ *  Name: Alam Mohammed    Student ID: 156506214   Date:  Nov 2023
  *  Link to App : 
  ********************************************************************************/
 import { Image } from "react-bootstrap"
@@ -19,7 +19,7 @@ export default function Home() {
             src="https://upload.wikimedia.org/wikipedia/commons/3/30/Metropolitan_Museum_of_Art_%28The_Met%29_-_Central_Park%2C_NYC.jpg"
             fluid
             rounded
-            alt="Assignment 4"
+            alt="Assignment 5"
           />
           <br />
           <br />
