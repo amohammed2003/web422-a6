@@ -1,39 +1,34 @@
-import { useAtom } from "jotai"
-import { favouritesAtom } from "@/store"
-import Row from "react-bootstrap/Row"
-import Col from "react-bootstrap/Col"
-import Card from "react-bootstrap/Card"
-import ArtworkCard from "@/components/ArtworkCard"
+import { Row, Col, Card, Pagination } from 'react-bootstrap'
+import { ArtworkCard } from '../components'
 
-export default function Favourite() {
-  const [favouritesList, setFavouritesList] = useAtom(favouritesAtom) // Getting a reference to the favouriteList from favouritesAtom
+import { useAtom } from 'jotai'
+import { favouritesAtom } from '../store'
 
-  return (
-    <>
-      <Row className="gy-4">
-        {favouritesList.length > 0 ? (
-          favouritesList.map((currentObjectID) => (
-            <Col lg={3} key={currentObjectID}>
-              <ArtworkCard objectID={currentObjectID} />
-            </Col>
-          ))
-        ) : (
-          <Card>
-            <Card.Body>
-              <Card.Text as="div">
-                <h4>Nothing Here</h4>
-                Try adding some new artwork to the list.{" "}
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        )}
-      </Row>
+export default function Favourites() {
+    const [favouritesList, setFavouritesList] = useAtom(favouritesAtom)
 
-      {favouritesList.length > 0 && (
-        <Row>
-          <Col> </Col>
+    if (!favouritesList) return null
+
+    return (
+        <Row className='gy-4'>
+            {!favouritesList.length ? (
+                <Card>
+                    <Card.Body>
+                        <Card.Title>
+                            <h4>Nothing Here</h4>
+                        </Card.Title>
+                        <Card.Text>
+                            Try adding some new artwork to the list.
+                        </Card.Text>
+                    </Card.Body>
+                </Card>
+            ) : (
+                favouritesList.map((objectID) => (
+                    <Col lg={3} key={objectID}>
+                        <ArtworkCard objectID={objectID} />
+                    </Col>
+                ))
+            )}
         </Row>
-      )}
-    </>
-  )
+    )
 }
